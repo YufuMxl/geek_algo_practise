@@ -1,5 +1,8 @@
 package second_week;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 元素和为目标值的子矩阵数量
  *
@@ -16,14 +19,7 @@ public class NumberOfSubMatricesThatSumToTarget {
      * sum(row1,cor1,row2,cor2) = s[row2][col2] - s[row2][col1 - 1] - s[row1 - 1][col2] + s[row1 - 1][col1 - 1] = target
      */
     public int numSubMatrixSumTarget(int[][] matrix, int target) {
-        int[][] s = new int[matrix.length + 1][matrix[0].length + 1];
-
-        for (int i = 1; i < s.length; i++) {
-            for (int j = 1; j < s[0].length; j++) {
-                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + matrix[i - 1][j - 1];
-            }
-        }
-
+        int[][] s = genPrefixSumArray(matrix);
         int count = 0;
         for (int i = 1; i < s.length; i++) {
             for (int j = 1; j < s[0].length; j++) {
@@ -37,5 +33,34 @@ public class NumberOfSubMatricesThatSumToTarget {
             }
         }
         return count;
+    }
+
+    public int numSubMatrixSumTarget2(int[][] matrix, int target) {
+        int[][] s = genPrefixSumArray(matrix);
+        int count = 0;
+        for (int top = 1; top < s.length; top++) {
+            for (int bot = top; bot < s.length; bot++) {
+                int cur;
+                Map<Integer, Integer> map = new HashMap<>();
+                for (int r = 1; r < s[0].length; r++) {
+                    cur = s[bot][r] - s[top - 1][r];
+                    if (cur == target) count++;
+                    if (map.containsKey(cur - target)) count += map.get(cur - target);
+                    map.put(cur, map.getOrDefault(cur, 0) + 1);
+                }
+            }
+        }
+        return count;
+    }
+
+    private int[][] genPrefixSumArray(int[][] matrix) {
+        int[][] s = new int[matrix.length + 1][matrix[0].length + 1];
+
+        for (int i = 1; i < s.length; i++) {
+            for (int j = 1; j < s[0].length; j++) {
+                s[i][j] = s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1] + matrix[i - 1][j - 1];
+            }
+        }
+        return s;
     }
 }
