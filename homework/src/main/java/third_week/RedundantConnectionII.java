@@ -43,9 +43,7 @@ public class RedundantConnectionII {
         if (maxInDegreeNode != -1 && root != -1) {
             // 1.存在一个入度为 2 的节点和一个入度为 0 的根节点
             for (int i = this.n - 1; i >= 0; i--) {
-                if (edges[i][1] == maxInDegreeNode && hasNoCycle(root, edges[i])) {
-                    return edges[i];
-                }
+                if (edges[i][1] == maxInDegreeNode && hasNoCycle(root, edges[i])) return edges[i];
             }
         } else {
             // 2.所有节点的入度都为 1
@@ -68,7 +66,7 @@ public class RedundantConnectionII {
     private boolean hasNoCycle(int root, int[] removedEdge) {
         int[] inDegreeCopy = Arrays.copyOf(this.inDegree, this.inDegree.length);
         // 从图中删除一条边
-        graph.get(removedEdge[0]).remove(removedEdge[1]);
+        this.graph.get(removedEdge[0]).remove(removedEdge[1]);
         inDegreeCopy[removedEdge[1]]--;
 
         int visitedCount = 0;
